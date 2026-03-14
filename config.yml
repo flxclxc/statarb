@@ -1,0 +1,120 @@
+# Statistical Arbitrage Strategy - Configuration File
+# This file contains all configurable parameters for the pairs trading strategy
+
+# ============================================================================
+# DATA CONFIGURATION
+# ============================================================================
+data:
+  # Minimum number of trading days required for a stock
+  min_trading_days: 1500
+  
+  # Number of stocks to analyze (from S&P 500)
+  num_stocks: 50
+
+# ============================================================================
+# TRAIN/TEST SPLIT CONFIGURATION
+# ============================================================================
+train_test_split:
+  # Fraction of data to use for training (0.6 = 60% for training, 40% for testing)
+  train_fraction: 0.4
+  
+  # Description: Training period is used for cointegration analysis
+  # Out-of-sample period is used for backtesting
+
+# ============================================================================
+# COINTEGRATION ANALYSIS CONFIGURATION
+# ============================================================================
+cointegration:
+  # P-value cutoff for cointegration test (lower = stricter)
+  p_value_cutoff: 0.01
+  
+  # Minimum t-statistic for hedging relationship
+  min_t_stat: 3.5
+  
+  # Minimum correlation between the two assets
+  min_correlation: 0.3
+  
+  # Whether to require ADF test confirmation
+  require_adf: true
+
+# ============================================================================
+# PIPELINE CONFIGURATION - Spread Analysis
+# ============================================================================
+pipeline:
+  # ========================================================================
+  # Position Management
+  # ========================================================================
+  position_size: 10000
+  
+  # Initial capital for backtesting ($)
+  initial_capital: 100000.0
+  
+  # Transaction cost as fraction (0.001 = 0.1%)
+  # Applied twice per trade (entry + exit)
+  transaction_cost: 0.0
+  
+  # Directory for output plots
+  output_dir: plots
+  
+  # Directory for CSV results (will create timestamped subdirectories)
+  results_dir: results
+  
+  # ========================================================================
+  # Grid Search Configuration
+  # ========================================================================
+  # Spread window values to search over (days)
+  grid_search_spread_windows: [30, 50, 70]
+  
+  # Z-score window values to search over (days)
+  grid_search_zscore_windows: [30, 50, 70]
+  
+  # Entry threshold values to search over (z-score standard deviations)
+  grid_search_entry_thresholds: [1.0, 1.5, 2.0, 2.5]
+  
+  # Exit threshold values to search over (z-score standard deviations)
+  grid_search_exit_thresholds: [0.0, 0.5, 1.0]
+  
+  # ========================================================================
+  # Default Parameters (used if grid search doesn't find optimal)
+  # ========================================================================
+  # Spread window for rolling regression (days)
+  spread_window: 60
+  
+  # Z-score window for normalization (days)
+  zscore_window: 60
+  
+  # Entry threshold (z-score standard deviations)
+  entry_threshold: 2.0
+  
+  # Exit threshold (z-score standard deviations)
+  exit_threshold: 0.5
+
+# ============================================================================
+# BACKTEST CONFIGURATION
+# ============================================================================
+backtest:
+  # Number of top pairs to backtest
+  num_pairs: 10
+  
+  # Whether to generate combined analysis plots
+  generate_combined_plots: true
+  
+  # CSV file for cached cointegrated pairs
+  cache_file: cointegrated_pairs_train.csv
+
+# ============================================================================
+# STRATEGY RULES
+# ============================================================================
+# Position Logic:
+#   LONG position (position = 1):
+#     - Entry: when z-score < -entry_threshold (spread unusually low)
+#     - Exit: when z-score > -exit_threshold (spread recovers)
+#
+#   SHORT position (position = -1):
+#     - Entry: when z-score > entry_threshold (spread unusually high)
+#     - Exit: when z-score < exit_threshold (spread recovers)
+#
+# PnL Calculation:
+#   - LONG: PnL = (exit_price - entry_price)
+#   - SHORT: PnL = (entry_price - exit_price)
+#   - Net: PnL_after_costs = PnL - (transaction_cost * initial_capital * position_size * 2)
