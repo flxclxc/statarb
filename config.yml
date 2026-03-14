@@ -16,7 +16,7 @@ data:
 # ============================================================================
 train_test_split:
   # Fraction of data to use for training (0.6 = 60% for training, 40% for testing)
-  train_fraction: 0.4
+  train_fraction: 0.6
   
   # Description: Training period is used for cointegration analysis
   # Out-of-sample period is used for backtesting
@@ -26,7 +26,7 @@ train_test_split:
 # ============================================================================
 cointegration:
   # P-value cutoff for cointegration test (lower = stricter)
-  p_value_cutoff: 0.01
+  p_value_cutoff: 0.005
   
   # Minimum t-statistic for hedging relationship
   min_t_stat: 3.5
@@ -44,7 +44,7 @@ pipeline:
   # ========================================================================
   # Position Management
   # ========================================================================
-  position_size: 10000
+  position_size: 1000
   
   # Initial capital for backtesting ($)
   initial_capital: 100000.0
@@ -94,7 +94,7 @@ pipeline:
 # ============================================================================
 backtest:
   # Number of top pairs to backtest
-  num_pairs: 10
+  num_pairs: 25
   
   # Whether to generate combined analysis plots
   generate_combined_plots: true

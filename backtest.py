@@ -75,14 +75,14 @@ class SimpleBacktester:
                     entry_price = spread_data.loc[date]
                     entry_z_score = z_score
                     entry_date = date
-                    entry_size = position_size
+                    entry_size = position_size / abs(entry_price)
                 elif z_score < -entry_threshold:
                     # Long spread (entry: z-score is low, expect mean-reversion up)
                     position = 1
                     entry_price = spread_data.loc[date]
                     entry_z_score = z_score
                     entry_date = date
-                    entry_size = position_size
+                    entry_size = position_size / abs(entry_price)
             
             # Exit logic
             elif position != 0:
