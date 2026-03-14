@@ -1,0 +1,32 @@
+# Data files
+*.csv
+data/
+
+# Plot outputs
+*.png
+plots/
+
+# Results
+results/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Environment
+.env
+.venv
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
